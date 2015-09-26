@@ -13,6 +13,7 @@ The app currently needs the following features to be considered "complete" and w
 * User avatars
 * Post editing
 * Thread creation
+* Quoting posts
 
 The app is obviously open source and hypothetically everyone could just make their own forks and release a million Facepunch
 apps on the Play Store, but I ask that out of courtesy any developers just contribute directly to this project, submit pull
