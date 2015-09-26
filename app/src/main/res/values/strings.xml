@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Facepunch</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_forum">ForumActivity</string>
+    <string name="title_activity_thread">ThreadActivity</string>
+
+    <string name="key_forumURL">forumURL</string>
+    <string name="key_forumName">forumName</string>
+    <string name="key_threadURL">threadURL</string>
+    <string name="key_threadTitle">threadTitle</string>
+</resources>

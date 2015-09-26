@@ -1,0 +1,141 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ThreadActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/navBar">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.melnykov.fab.ObservableScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/postScrollView">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/postList">
+
+                </LinearLayout>
+
+            </com.melnykov.fab.ObservableScrollView>
+
+            <com.melnykov.fab.FloatingActionButton
+                android:id="@+id/newPostButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:layout_margin="16dp"
+                android:onClick="onNewPostClicked"
+                android:src="@mipmap/ic_action_new"
+                fab:fab_colorNormal="@color/primary"
+                fab:fab_colorPressed="@color/primaryDark"
+                fab:fab_colorRipple="@color/primary"/>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/primaryDark"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/navBar"
+        android:elevation="8dp"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingRight="20dp">
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/firstPageButton"
+            android:adjustViewBounds="true"
+            android:background="#00ffffff"
+            android:src="@drawable/doublearrow_left"
+            android:cropToPadding="false"
+            android:scaleType="fitCenter"
+            android:layout_weight="0.25"
+            android:layout_marginRight="20dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:onClick="onFirstPageClicked" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/prevPageButton"
+            android:adjustViewBounds="true"
+            android:background="#00ffffff"
+            android:src="@drawable/arrow_left"
+            android:cropToPadding="false"
+            android:scaleType="fitCenter"
+            android:layout_weight="0.25"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:onClick="onPrevPageClicked" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Loading"
+            android:id="@+id/pageNumberText"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:textAlignment="center"
+            android:gravity="center_vertical|center_horizontal"
+            android:layout_gravity="center"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/nextPageButton"
+            android:adjustViewBounds="true"
+            android:background="#00ffffff"
+            android:src="@drawable/arrow_right"
+            android:cropToPadding="false"
+            android:scaleType="fitCenter"
+            android:layout_weight="0.25"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:onClick="onNextPageClicked" />
+
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/lastPageButton"
+            android:adjustViewBounds="true"
+            android:background="#00ffffff"
+            android:src="@drawable/doublearrow_right"
+            android:cropToPadding="false"
+            android:scaleType="fitCenter"
+            android:layout_weight="0.25"
+            android:layout_marginLeft="20dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:onClick="onLastPageClicked" />
+
+    </LinearLayout>
+
+</RelativeLayout>

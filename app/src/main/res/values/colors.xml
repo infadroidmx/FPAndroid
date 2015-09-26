@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#CC0000</color>
+    <color name="primaryDark">#B80000</color>
+    <color name="accent">#CC0000</color>
+
+    <color name="thread_sticky">#FFA</color>
+</resources>
