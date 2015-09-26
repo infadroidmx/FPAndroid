@@ -100,10 +100,15 @@ public class ThreadActivity extends AppCompatActivity {
 
                 for (int i=0; i < postTags.size(); i++) {
                     Element postTag = postTags.get(i);
+
+                    Element postContent = postTag.select("div.content").first().select("blockquote").first();
+
                     Post post = new Post();
-                    post.Body = postTag.select("div.content").first().select("blockquote").remove().html();//Jsoup.parse(postTag.select("div.content").first().html().replace("<br>", "br2n").replace("<br/>", "br2n").replace("<b>", "[b]")).text().replace("br2n", "\n");
+                    post.Body = postContent.html();
                     post.Author = postTag.select("div.username_container").first().text();
                     mPosts.add(post);
+
+                    Log.d("FUCK", post.Body);
                 }
 
                 result = true;
