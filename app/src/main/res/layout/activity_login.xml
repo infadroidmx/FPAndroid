@@ -44,7 +44,8 @@
             android:padding="10dp"
             android:autoText="false"
             android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp" />
+            android:layout_marginRight="5dp"
+            android:textAlignment="center" />
 
         <EditText
             android:layout_width="match_parent"
@@ -61,7 +62,8 @@
             android:background="@drawable/rounded"
             android:padding="10dp"
             android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp" />
+            android:layout_marginRight="5dp"
+            android:textAlignment="center" />
 
         <Button
             android:layout_width="match_parent"

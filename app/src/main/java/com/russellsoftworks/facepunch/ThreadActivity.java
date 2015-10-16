@@ -1,10 +1,12 @@
 package com.russellsoftworks.facepunch;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -16,7 +18,12 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -26,7 +33,9 @@ import com.melnykov.fab.FloatingActionButton;
 import com.melnykov.fab.ObservableScrollView;
 
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 import org.kefirsf.bb.BBProcessorFactory;
 import org.kefirsf.bb.TextProcessor;
@@ -96,19 +105,56 @@ public class ThreadActivity extends AppCompatActivity {
                 if (newReplyTag != null)
                     mThreadLocked = newReplyTag.text().toLowerCase().contains("closed");
 
+                Elements postDateTags = Jsoup.parse(response.toString()).select("span.postdate");
                 Elements postTags = Jsoup.parse(response.toString()).select("div.postdetails");
 
                 for (int i=0; i < postTags.size(); i++) {
                     Element postTag = postTags.get(i);
+                    Element postDateTag = postDateTags.get(i);
+
+                    // Trim some unnecessary elements from the post HTML
+                    if (postTag.select(".usertitle").first() != null)
+                        postTag.select(".usertitle").remove();
+
+                    if (postTag.select(".username offline").first() != null)
+                        postTag.select(".username offline").remove();
+
+                    if (postTag.select("#userstats").first() != null)
+                        postTag.select("#userstats").first().remove();
+
+                    if (postTag.select(".imlinks").first() != null)
+                        postTag.select(".imlinks").first().remove();
+
+                    if (postTag.select(".postfoot").first() != null)
+                        postTag.select(".postfoot").first().remove();
+
+                    if (postTag.select("hr") != null)
+                        postTag.select("hr").remove();
+
+                    // Set avatar URL to explicit so they don't try to reference a null
+                    // asset in the Android assets directory that we are loading this HTML
+                    // relative to.
+                    if (postTag.select(".avatar_image").first() != null) {
+                        String src = postTag.select(".avatar_image").first().attr("src");
+                        postTag.select(".avatar_image").first().attr("src", "http://facepunch.com/" + src);
+                    }
+
+                    Post post = new Post();
+
+                    if (postDateTag != null)
+                        post.Date = postDateTag.text();
+
+                    if (postTag.select(".username_container").first() != null && post.Date.length() > 0) {
+                        String originalText = postTag.select(".username_container").first().html();
+                        postTag.select(".username_container").first().html("<p>" + originalText + "<br/><span class='postdate'>" + post.Date + "</span></p>");
+                    }
 
                     Element postContent = postTag.select("div.content").first().select("blockquote").first();
 
-                    Post post = new Post();
-                    post.Body = postContent.html();
-                    post.Author = postTag.select("div.username_container").first().text();
-                    mPosts.add(post);
+                    post.Body = postTag.html();
+                    post.Author = postTag.select("a.username").first() != null ? postTag.select("a.username").first().text() : "";
 
-                    Log.d("FUCK", post.Body);
+                    mPosts.add(post);
                 }
 
                 result = true;
@@ -174,7 +220,7 @@ public class ThreadActivity extends AppCompatActivity {
         protected void onPostExecute(Boolean result) {
             if (result) {
                 mProgressDialog.dismiss();
-                loadThread(mThreadURL + "&page=" + (mThreadPage + 99999));
+                loadThread(mThreadURL + "&page=" + (mThreadPage + 99999)); // TODO: Something more reasonable than just adding 99999 to the current thread page? vBulletin probably has a last page GET param..
             } else {
                 Toast.makeText(getApplicationContext(), "Problem submitting post!", Toast.LENGTH_SHORT).show();
             }
@@ -238,19 +284,21 @@ public class ThreadActivity extends AppCompatActivity {
 
     protected void populateThread() {
         LinearLayout postList = (LinearLayout) findViewById(R.id.postList);
+        boolean isThreadFinishedLoading = false;
 
         for (int i=0; i < mPosts.size(); i++) {
             Post post = mPosts.get(i);
             View view = getLayoutInflater().inflate(R.layout.thread_post, null);
-            ((TextView) view.findViewById(R.id.authorName)).setText(post.Author);
-            ((TextView) view.findViewById(R.id.postBody)).setText(Html.fromHtml(post.Body));
+
+            String webContent = "<!DOCTYPE html><html><head><meta charset='UTF-8'><link rel='stylesheet' href='style.css'></head><body>" + post.Body + "</body></html>";
+
+            // TODO: Need a way to tell the activity the WebViews have finished loading the posts.. Likely via onPageStarted/Finished and WebViewClient
+            WebView webView = (WebView) view.findViewById(R.id.postWebView); //new WebView(this);
+            webView.loadDataWithBaseURL("file:///android_asset/", webContent, "text/html", "UTF-8", null);
+            webView.getSettings().setJavaScriptEnabled(true);
+            webView.setBackgroundColor(Color.TRANSPARENT);
 
             postList.addView(view);
-
-            if (i != mPosts.size() - 1) {
-                View divider = getLayoutInflater().inflate(R.layout.divider_forum, null);
-                postList.addView(divider);
-            }
         }
 
         ((TextView) findViewById(R.id.pageNumberText)).setText("Page " + mThreadPage);
@@ -270,7 +318,7 @@ public class ThreadActivity extends AppCompatActivity {
     // TODO: Consider a better, less fucking lazy way of doing next/last page..
     // TODO: Maybe by actually figuring out how many pages are in a thread? It's not that hard. Idiot.
     public void onNextPageClicked(View v) {
-        loadThread(mThreadURL + "&page=" + (mThreadPage + 1)); // Facepunch automatically redirects non-existent page numbers to last page
+        loadThread(mThreadURL + "&page=" + (mThreadPage + 1));
     }
 
     public void onLastPageClicked(View v) {
