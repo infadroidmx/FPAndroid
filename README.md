@@ -9,12 +9,10 @@ we're free to argue about politics and report Rust hackers from the comfort of o
 
 ## Roadmap / Developing
 The app currently needs the following features to be considered "complete" and worth releasing:
-* Proper post parsing, i.e. images and possibly videos
-* User avatars
 * Post editing
 * Thread creation
 * Quoting posts
 
 The app is obviously open source and hypothetically everyone could just make their own forks and release a million Facepunch
 apps on the Play Store, but I ask that out of courtesy any developers just contribute directly to this project, submit pull
-requests, and when the app is ready for release I'll use my developer account for publishing.
+requests, and when the app is ready for release I'll use my developer account (Russell Softworks on Play Store) for publishing.
